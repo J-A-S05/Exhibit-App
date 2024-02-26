@@ -19,11 +19,13 @@ import {
   Help,
   Menu,
   Close,
+  SettingsEthernet,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import { setConvoId, setMessages } from "state";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -38,8 +40,32 @@ const Navbar = () => {
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
+  const [text, setText] = useState("");
+  const token = useSelector((state) => state.token)
 
   const fullName = `${user.firstName} ${user.lastName}`;
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearchClick()
+    }
+  };
+
+  const handleSearchClick = async () => {
+    const arr = text.split(" ")
+    const username = arr[0] + '_' + arr[1];
+    const response = await fetch(`http://localhost:8000/users/${username}/byusername` , {
+      method : "GET",
+      headers : {Authorization: `Bearer ${token}`}
+    });
+
+    const data = await response.json()
+    const searchId = data[0]._id;
+
+    setText("")
+    navigate(`/profile/${searchId}`);
+    // navigate(0);
+    // console.log(data[0]._id)
+  }
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -56,7 +82,7 @@ const Navbar = () => {
             },
           }}
         >
-          Sociopedia
+          Exhibit
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween
@@ -65,8 +91,13 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
-            <IconButton>
+            <InputBase
+              placeholder="Search..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={handleKeyPress}
+            />
+            <IconButton onClick={handleSearchClick}>
               <Search />
             </IconButton>
           </FlexBetween>
@@ -83,7 +114,9 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
+          <IconButton onClick={() => navigate("/chat")}>
+            <Message sx={{ fontSize: "25px" }} />
+          </IconButton>
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard" value={fullName}>
@@ -107,7 +140,14 @@ const Navbar = () => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  dispatch(setLogout());
+                  navigate("/");
+                }}
+              >
+                Log Out
+              </MenuItem>
             </Select>
           </FormControl>
         </FlexBetween>
@@ -182,7 +222,12 @@ const Navbar = () => {
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
+                <MenuItem
+                  onClick={() => {
+                    dispatch(setLogout());
+                    navigate("/");
+                  }}
+                >
                   Log Out
                 </MenuItem>
               </Select>

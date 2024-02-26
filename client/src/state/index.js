@@ -5,6 +5,11 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
+  convoId : "",
+  convos : [],
+  messages : [],
+  sent : false,
+  activeChatFriend : null,
 };
 
 export const authSlice = createSlice({
@@ -13,6 +18,12 @@ export const authSlice = createSlice({
   reducers: {
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
+    },
+    setSent : (state) => {
+      state.sent = !state.sent
+    },
+    setConvoId : (state , action) => {
+      state.convoId = action.payload.convoId
     },
     setLogin: (state, action) => {
       state.user = action.payload.user;
@@ -29,6 +40,21 @@ export const authSlice = createSlice({
         console.error("user friends non-existent :(");
       }
     },
+    setConvos : (state , action) => {
+      if(state.user){
+        state.convos = action.payload.convos
+      }
+      else{
+        console.log("No conversations for this user")
+      }
+    },
+    setMessages : (state , action) => {
+      if (state.user) {
+        state.messages = action.payload.messages
+      } else {
+        console.log("No messages")
+      }
+    },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
     },
@@ -39,9 +65,15 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    setActiveChatFriend : (state , action) => {
+      state.activeChatFriend = {
+        friendName : action.payload.friend.friendName,
+        photo : action.payload.friend.photo
+      }
+    }
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
+export const { setMode, setSent, setConvoId, setLogin, setLogout, setFriends, setConvos, setMessages, setPosts, setPost, setActiveChatFriend } =
   authSlice.actions;
 export default authSlice.reducer;

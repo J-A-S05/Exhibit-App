@@ -11,6 +11,23 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getUserByName = async (req , res) => {
+  try {
+    const {username} = req.params;
+    const arr = username.split("_")
+    const fName = arr[0];
+    const lName = arr[1];
+
+    // console.log(firstName + " " + lastName)
+    const user = await User.find({firstName : fName , lastName : lName});
+    // const user = fName + " " + lName
+    res.status(200).json(user);
+    // console.log(user)
+  } catch (err) {
+    res.status(404).json({message : err.message})
+  }
+}
+
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params;

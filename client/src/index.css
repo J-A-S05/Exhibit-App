@@ -5,9 +5,18 @@
   html,
   body,
   #root,
+  /* body::-webkit-scrollbar {
+    display: none;
+  } */
   .app{
     height: 100%;
     width: 100%;
     font-family: "Rubik" , sans-serif;
+  }
+  .app::-webkit-scrollbar {
+    display: none;
+  }
+  .chat-box::-webkit-scrollbar {
+    display: none;
   }
 

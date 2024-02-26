@@ -14,6 +14,8 @@ const HomePage = () => {
   return (
     <Box>
       <Navbar />
+
+      {/* LEFT SIDE */}
       <Box
         width="100%"
         padding="2rem 6%"
@@ -24,6 +26,8 @@ const HomePage = () => {
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
           <UserWidget userId={_id} picturePath={picturePath} />
         </Box>
+
+        {/* MID */}
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
@@ -33,8 +37,7 @@ const HomePage = () => {
         </Box>
         {isNonMobileScreens && (
           <Box flexBasis="26%">
-            <AdvertWidget />
-            <Box m="2rem 0" />
+            <Box m="0 0" />
             <FriendListWidget userId={_id} />
           </Box>
         )}
